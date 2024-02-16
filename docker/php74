@@ -1,0 +1,23 @@
+FROM php:7.4-fpm
+
+WORKDIR /app
+
+RUN apt update
+RUN apt install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    nano \
+    sqlite3 \
+    wget \
+    unzip \
+    zip
+
+RUN apt clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install bcmath exif gd mbstring pcntl pdo_mysql zip
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
