@@ -14,8 +14,12 @@ RUN apt-get install -y --no-install-recommends \
         libcurl4-openssl-dev \
         libedit-dev \
         libdbd-freetds \
+        libfreetype6-dev \
+        libgd-dev \
+        libjpeg62-turbo-dev \
         libmcrypt-dev \
         libmemcached-dev \
+        libpng-dev \
         libqt4-sql-tds \
         libqt5sql5-tds \
         libqxmlrpc-dev \
@@ -28,6 +32,8 @@ RUN apt-get install -y --no-install-recommends \
         zlib1g-dev \
         nano \
         wget
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 RUN locale-gen
@@ -43,9 +49,10 @@ RUN rm -rf *.tgz
 RUN ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so
 RUN ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a
 
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-configure mssql
 RUN docker-php-ext-configure mysql --with-mysql=mysqlnd
-RUN docker-php-ext-install curl intl mbstring mcrypt mssql mysql mysqli opcache soap
+RUN docker-php-ext-install curl gd intl mbstring mcrypt mssql mysql mysqli opcache soap
 RUN docker-php-ext-enable memcached memcache xdebug
 
 RUN a2enmod rewrite
