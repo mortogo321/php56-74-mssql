@@ -31,7 +31,8 @@ RUN apt-get install -y --no-install-recommends \
         locales \
         zlib1g-dev \
         nano \
-        wget
+        wget \
+        zip
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -52,7 +53,8 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-configure mssql
 RUN docker-php-ext-configure mysql --with-mysql=mysqlnd
-RUN docker-php-ext-install curl gd intl mbstring mcrypt mssql mysql mysqli opcache soap
+RUN docker-php-ext-configure zip --with-libzip
+RUN docker-php-ext-install curl gd intl mbstring mcrypt mssql mysql mysqli opcache soap zip
 RUN docker-php-ext-enable memcached memcache xdebug
 
 RUN a2enmod rewrite
