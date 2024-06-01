@@ -18,6 +18,19 @@ RUN apt install -y \
 
 RUN apt clean && rm -rf /var/lib/apt/lists/*
 
+RUN pecl install xdebug-3.1.6
+
 RUN docker-php-ext-install bcmath exif gd mbstring pcntl pdo_mysql zip
+RUN docker-php-ext-enable xdebug
+
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+RUN sed -e 's/;date.timezone =/date.timezone = Asia\/Bangkok/' -i "$PHP_INI_DIR/php.ini"
+RUN sed -e 's/;mssql.charset = "ISO-8859-1"/mssql.charset = "UTF-8"/' -i "$PHP_INI_DIR/php.ini"
+
+RUN echo 'zend_extension =' $(find /usr/local/lib/php/ -name xdebug.so) >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+RUN echo 'xdebug.mode = debug' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+RUN echo 'xdebug.start_with_request = yes' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+RUN echo 'xdebug.client_host = "host.docker.internal"' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+RUN echo 'xdebug.client_port = 9004' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
