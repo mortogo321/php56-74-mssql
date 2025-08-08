@@ -66,10 +66,5 @@ RUN sed -ri -e 's/^([ \t]*)(<\/VirtualHost>)/\1\tHeader set Access-Control-Allow
 RUN sed -e 's/\[global\]/\[global\]\n\ttds version = 7.0\n\tclient charset = UTF-8\n/' -i /etc/freetds/freetds.conf
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-RUN sed -e 's/;date.timezone =/date.timezone = Asia\/Bangkok/' -i "$PHP_INI_DIR/php.ini"
-RUN sed -e 's/;mssql.charset = "ISO-8859-1"/mssql.charset = "UTF-8"/' -i "$PHP_INI_DIR/php.ini"
 
-RUN echo 'xdebug.remote_enable = 1' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
-RUN echo 'xdebug.remote_autostart = 1' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
-RUN echo 'xdebug.remote_host = "host.docker.internal"' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
-RUN echo 'xdebug.remote_port = 9003' >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+COPY docker/php-legacy.ini "$PHP_INI_DIR/conf.d/custom.ini"
